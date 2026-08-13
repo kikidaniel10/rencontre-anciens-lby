@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 TEST SUPABASE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; background: #0b1a2e; color: white; }
+        .card { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); }
+        input, select { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #d4a843; border-radius: 8px; background: rgba(255,255,255,0.1); color: white; }
+        input::placeholder { color: #aaa; }
+        select option { background: #1a2f44; }
+        button { background: #d4a843; color: #0b1a2e; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; }
+        button:hover { background: #e5c687; }
+        #liste { margin-top: 20px; }
+        .item { background: rgba(212, 168, 67, 0.2); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 3px solid #d4a843; }
+        .succes { color: #4caf50; }
+        .erreur { color: #f44336; }
+        #resultat { margin-top: 10px; padding: 10px; border-radius: 8px; font-weight: bold; }
+        h1 { color: #d4a843; text-align: center; }
+        .info { text-align: center; color: #aaa; font-size: 14px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>✦ GALAXIE · TEST ✦</h1>
+        <div class="info">🔌 Connecté à Supabase</div>
+        
+        <input type="text" id="nomInput" placeholder="Votre nom">
+        <select id="sexeSelect">
+            <option value="Homme">🧑 Homme</option>
+            <option value="Femme">👩 Femme</option>
+        </select>
+        <select id="tailleSelect">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+        <input type="text" id="dossardInput" placeholder="Dossard (ex: 6#, 00, A1)">
+        <button onclick="envoyer()">✦ S'inscrire ✦</button>
+        
+        <div id="resultat"></div>
+        <div id="liste"></div>
+    </div>
+
+    <script>
+        // 🔑 CONFIGURATION SUPABASE
+        const SUPABASE_URL = "https://ifkusmgfseoxpehlnhiw.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlma3VzbWdmc2VveHBlaGxuaGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTg3MzEsImV4cCI6MjEwMjE5NDczMX0.KjBTkDvTjf1Als8zoOOwLTlZfOOg0Zp1lPppwe8C9hc";
+
+        console.log("🚀 Démarrage...");
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("✅ Supabase connecté !");
+
+        // 📋 CHARGER LA LISTE
+        async function charger() {
+            console.log("📋 Chargement de la liste...");
+            const { data, error } = await supabase
+                .from('inscrits')
+                .select('*')
+                .order('dossard');
+
+            if (error) {
+                console.error("❌ Erreur chargement:", error);
+                document.getElementById('liste').innerHTML = '❌ Erreur: ' + error.message;
+                return;
+            }
+
+            console.log(`✅ ${data.length} inscrits chargés`);
+            let html = '<h3>📋 Participants:</h3>';
+            if (data.length === 0) {
+                html += '<p>Aucun inscrit pour l\'instant</p>';
+            }
+            data.forEach(p => {
+                html += `<div class="item">#${p.dossard} · ${p.nom} (${p.sexe}) · Taille ${p.taille}</div>`;
+            });
+            document.getElementById('liste').innerHTML = html;
+        }
+
+        // ➕ AJOUTER UN INSCRIT
+        async function envoyer() {
+            const nom = document.getElementById('nomInput').value.trim();
+            const sexe = document.getElementById('sexeSelect').value;
+            const taille = document.getElementById('tailleSelect').value;
+            const dossard = document.getElementById('dossardInput').value.trim();
+
+            if (!nom || !dossard) {
+                document.getElementById('resultat').innerHTML = '❌ Nom et dossard obligatoires';
+                return;
+            }
+
+            document.getElementById('resultat').innerHTML = '⏳ Envoi en cours...';
+            console.log("📤 Envoi:", { nom, sexe, taille, dossard });
+
+            // Vérification dossard unique pour hommes
+            if (sexe === 'Homme') {
+                console.log("🔍 Vérification dossard pour homme...");
+                const { data: existing, error: checkError } = await supabase
+                    .from('inscrits')
+                    .select('dossard')
+                    .eq('dossard', dossard)
+                    .eq('sexe', 'Homme');
+
+                if (checkError) {
+                    document.getElementById('resultat').innerHTML = '❌ ' + checkError.message;
+                    return;
+                }
+
+                if (existing && existing.length > 0) {
+                    document.getElementById('resultat').innerHTML = `❌ Dossard "${dossard}" déjà pris par un homme`;
+                    return;
+                }
+            }
+
+            // Insertion
+            console.log("💾 Insertion dans Supabase...");
+            const { error } = await supabase
+                .from('inscrits')
+                .insert([{ nom, sexe, taille, dossard }]);
+
+            if (error) {
+                console.error("❌ Erreur insertion:", error);
+                document.getElementById('resultat').innerHTML = '❌ Erreur: ' + error.message;
+                return;
+            }
+
+            console.log("✅ Insertion réussie !");
+            document.getElementById('resultat').innerHTML = '✅ ' + nom + ' inscrit avec #' + dossard + ' !';
+            document.getElementById('nomInput').value = '';
+            document.getElementById('dossardInput').value = '';
+            charger();
+        }
+
+        // 🚀 DÉMARRAGE
+        charger();
+        console.log('✦ Système GALAXIE avec Supabase initialisé ✦');
+    </script>
+</body>
+</html>

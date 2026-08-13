@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✦ GALAXIE · Anciens LBY ✦</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="card">
+        <!-- EN-TÊTE -->
+        <div class="header-galaxie">
+            <div class="stars">✦ ✦ ✦</div>
+            <h1>✦ GALAXIE <span>des Anciens</span></h1>
+            <div class="sous-titre">◈ DU LBY ◈</div>
+            <div class="ligne-doree"></div>
+        </div>
+
+        <!-- INFOS RENCONTRE -->
+        <div class="rencontre-info">
+            <div class="item">
+                <i class="fas fa-users"></i>
+                <strong>Génération</strong> 2016
+            </div>
+            <div class="item">
+                <i class="fas fa-clock"></i>
+                <strong>10h</strong> précises
+            </div>
+            <div class="item">
+                <i class="fas fa-map-marker-alt"></i>
+                <strong>LBY</strong> Essos
+            </div>
+            <div class="badge-annee">
+                <i class="fas fa-calendar-alt"></i> 22 Août 2026
+            </div>
+        </div>
+
+        <!-- MESSAGE ACCUEIL -->
+        <div class="message-accueil">
+            <i class="fas fa-star"></i>
+            <span>Dix ans d'amitié · Une passion, un lien qui ne faiblit pas</span>
+            <i class="fas fa-star"></i>
+        </div>
+
+        <!-- FORMULAIRE -->
+        <div class="form-title">
+            <i class="fas fa-pen-alt"></i> Inscription
+        </div>
+
+        <form id="formInscription">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Nom complet</label>
+                <input type="text" id="nom" placeholder="Votre nom" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-venus-mars"></i> Sexe</label>
+                    <select id="sexe" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Homme">🧑 Homme</option>
+                        <option value="Femme">👩 Femme</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> Dossard</label>
+                    <input type="number" id="dossard" placeholder="Numéro" min="1" max="999" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-rocket"></i> S'inscrire
+            </button>
+        </form>
+
+        <!-- MESSAGE RETOUR -->
+        <div id="messageContainer"></div>
+
+        <!-- LISTE DES INSCRITS -->
+        <div class="inscrits-section">
+            <div class="inscrits-header">
+                <h3><i class="fas fa-list-ul"></i> Participants</h3>
+                <span id="compteur">0 inscrits</span>
+            </div>
+            <div id="listeInscrits">
+                <span class="empty-message">◈ Aucun inscrit pour l'instant ◈</span>
+            </div>
+
+            <!-- ZONE ADMIN -->
+            <div class="admin-section">
+                <button id="btnAdmin" class="btn-admin">
+                    <i class="fas fa-user-shield"></i> Mode Admin
+                </button>
+                <div id="adminPanel" style="display:none; margin-top: 10px;">
+                    <div class="admin-controls">
+                        <input type="password" id="adminPassword" placeholder="Mot de passe" class="admin-input">
+                        <button id="btnSupprimer" class="btn-supprimer">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </button>
+                    </div>
+                    <select id="selectSuppression" class="admin-select">
+                        <option value="">Sélectionner un inscrit</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-legend">
+            <i class="fas fa-shield-alt"></i> Un groupe · Une histoire · Une famille
+            <br><span class="small">✦ Toujours ensemble ✦</span>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

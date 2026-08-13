@@ -14,11 +14,11 @@
         button:hover { background: #e5c687; }
         #liste { margin-top: 20px; }
         .item { background: rgba(212, 168, 67, 0.2); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 3px solid #d4a843; }
-        .succes { color: #4caf50; }
-        .erreur { color: #f44336; }
         #resultat { margin-top: 10px; padding: 10px; border-radius: 8px; font-weight: bold; }
         h1 { color: #d4a843; text-align: center; }
         .info { text-align: center; color: #aaa; font-size: 14px; margin-bottom: 20px; }
+        .succes { color: #4caf50; }
+        .erreur { color: #f44336; }
     </style>
 </head>
 <body>
@@ -80,18 +80,21 @@
 
         // ➕ AJOUTER UN INSCRIT
         async function envoyer() {
+            console.log("📤 Fonction envoyer() appelée !");
+            
             const nom = document.getElementById('nomInput').value.trim();
             const sexe = document.getElementById('sexeSelect').value;
             const taille = document.getElementById('tailleSelect').value;
             const dossard = document.getElementById('dossardInput').value.trim();
 
+            console.log("📤 Données:", { nom, sexe, taille, dossard });
+
             if (!nom || !dossard) {
-                document.getElementById('resultat').innerHTML = '❌ Nom et dossard obligatoires';
+                document.getElementById('resultat').innerHTML = '<span class="erreur">❌ Nom et dossard obligatoires</span>';
                 return;
             }
 
             document.getElementById('resultat').innerHTML = '⏳ Envoi en cours...';
-            console.log("📤 Envoi:", { nom, sexe, taille, dossard });
 
             // Vérification dossard unique pour hommes
             if (sexe === 'Homme') {
@@ -103,12 +106,12 @@
                     .eq('sexe', 'Homme');
 
                 if (checkError) {
-                    document.getElementById('resultat').innerHTML = '❌ ' + checkError.message;
+                    document.getElementById('resultat').innerHTML = '<span class="erreur">❌ ' + checkError.message + '</span>';
                     return;
                 }
 
                 if (existing && existing.length > 0) {
-                    document.getElementById('resultat').innerHTML = `❌ Dossard "${dossard}" déjà pris par un homme`;
+                    document.getElementById('resultat').innerHTML = '<span class="erreur">❌ Dossard "' + dossard + '" déjà pris par un homme</span>';
                     return;
                 }
             }
@@ -121,12 +124,12 @@
 
             if (error) {
                 console.error("❌ Erreur insertion:", error);
-                document.getElementById('resultat').innerHTML = '❌ Erreur: ' + error.message;
+                document.getElementById('resultat').innerHTML = '<span class="erreur">❌ Erreur: ' + error.message + '</span>';
                 return;
             }
 
             console.log("✅ Insertion réussie !");
-            document.getElementById('resultat').innerHTML = '✅ ' + nom + ' inscrit avec #' + dossard + ' !';
+            document.getElementById('resultat').innerHTML = '<span class="succes">✅ ' + nom + ' inscrit avec #' + dossard + ' !</span>';
             document.getElementById('nomInput').value = '';
             document.getElementById('dossardInput').value = '';
             charger();

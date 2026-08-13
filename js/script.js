@@ -133,7 +133,6 @@ form.addEventListener('submit', (e) => {
         return;
     }
 
-    // Vérification dossard unique pour les hommes UNIQUEMENT
     if (s === 'Homme' && inscrits.some(p => p.dossard === d && p.sexe === 'Homme')) {
         afficherMessage(`◈ Dossard "${d}" déjà pris par un homme ◈`, 'erreur');
         return;

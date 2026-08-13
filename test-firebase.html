@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 TEST FIREBASE</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <h1>🔥 TEST FIREBASE</h1>
+    
+    <form id="formTest">
+        <input type="text" id="nomTest" placeholder="Votre nom">
+        <button type="submit">Enregistrer</button>
+    </form>
+
+    <div id="resultat"></div>
+    <div id="liste"></div>
+
+    <script>
+        console.log("🔥 Script chargé !");
+
+        // VOTRE CONFIGURATION FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLmLjdSU2b07QAPxj0yMUHS_CQ9WWSJDI",
+            authDomain: "galaxie-anciens-Lby.firebaseapp.com",
+            projectId: "galaxie-anciens-Lby",
+            storageBucket: "galaxie-anciens-Lby.firebasestorage.app",
+            messagingSenderId: "366912186594",
+            appId: "1:366912186594:web:b06b5bd4296c3ddb9a196bb"
+        };
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase initialisé !");
+            document.getElementById('resultat').innerHTML = "✅ Firebase connecté !";
+        } catch(e) {
+            console.error("❌ Erreur Firebase:", e);
+            document.getElementById('resultat').innerHTML = "❌ Erreur: " + e.message;
+        }
+
+        const db = firebase.firestore();
+        console.log("✅ Firestore prêt");
+
+        const form = document.getElementById('formTest');
+        const nom = document.getElementById('nomTest');
+        const resultat = document.getElementById('resultat');
+        const liste = document.getElementById('liste');
+
+        // CHARGER LES DONNÉES
+        function charger() {
+            db.collection('test').get()
+                .then((snapshot) => {
+                    let html = '<h3>📋 Liste des tests:</h3>';
+                    if (snapshot.empty) {
+                        html += '<p>Aucun test enregistré</p>';
+                    }
+                    snapshot.forEach((doc) => {
+                        html += `<div>✅ ${doc.data().nom}</div>`;
+                    });
+                    liste.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("❌ Erreur chargement:", err);
+                    liste.innerHTML = "❌ Erreur: " + err.message;
+                });
+        }
+
+        charger();
+
+        // AJOUTER
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("🔥 Formulaire soumis !");
+            
+            const valeur = nom.value.trim();
+            console.log("Valeur:", valeur);
+
+            if (!valeur) {
+                resultat.innerHTML = "❌ Veuillez entrer un nom";
+                return;
+            }
+
+            db.collection('test').add({
+                nom: valeur,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                resultat.innerHTML = "✅ " + valeur + " enregistré dans Firebase !";
+                nom.value = '';
+                charger();
+            })
+            .catch(err => {
+                console.error("❌ Erreur ajout:", err);
+                resultat.innerHTML = "❌ Erreur Firebase: " + err.message;
+            });
+        });
+    </script>
+</body>
+</html>

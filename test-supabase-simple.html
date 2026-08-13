@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 TEST SIMPLE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>🔥 TEST SIMPLE</h1>
+    
+    <input type="text" id="nomInput" placeholder="Votre nom">
+    <input type="text" id="dossardInput" placeholder="Dossard">
+    <button id="btnInscrire">S'inscrire</button>
+    
+    <div id="resultat"></div>
+    <div id="liste"></div>
+
+    <script>
+        // CONFIGURATION
+        const SUPABASE_URL = "https://ifkusmgfseoxpehlnhiw.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlma3VzbWdmc2VveHBlaGxuaGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTg3MzEsImV4cCI6MjEwMjE5NDczMX0.KjBTkDvTjf1Als8zoOOwLTlZfOOg0Zp1lPppwe8C9hc";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("✅ Supabase connecté");
+
+        const resultat = document.getElementById('resultat');
+        const liste = document.getElementById('liste');
+
+        // CHARGER LA LISTE
+        async function charger() {
+            const { data, error } = await supabase
+                .from('inscrits')
+                .select('*')
+                .order('dossard');
+
+            if (error) {
+                liste.innerHTML = '❌ ' + error.message;
+                return;
+            }
+
+            let html = '<h3>Liste:</h3>';
+            if (data.length === 0) {
+                html += 'Aucun inscrit';
+            }
+            data.forEach(p => {
+                html += `<div>#${p.dossard} · ${p.nom}</div>`;
+            });
+            liste.innerHTML = html;
+        }
+
+        // AJOUTER
+        async function ajouter() {
+            const nom = document.getElementById('nomInput').value.trim();
+            const dossard = document.getElementById('dossardInput').value.trim();
+
+            if (!nom || !dossard) {
+                resultat.innerHTML = '❌ Nom et dossard obligatoires';
+                return;
+            }
+
+            resultat.innerHTML = '⏳ Envoi...';
+            console.log("Envoi:", { nom, dossard });
+
+            const { error } = await supabase
+                .from('inscrits')
+                .insert([{ nom, sexe: 'Homme', taille: 'M', dossard }]);
+
+            if (error) {
+                resultat.innerHTML = '❌ ' + error.message;
+                console.error("Erreur:", error);
+                return;
+            }
+
+            resultat.innerHTML = '✅ ' + nom + ' inscrit !';
+            document.getElementById('nomInput').value = '';
+            document.getElementById('dossardInput').value = '';
+            charger();
+        }
+
+        // LE BOUTON (méthode alternative)
+        document.getElementById('btnInscrire').addEventListener('click', ajouter);
+
+        // DÉMARRAGE
+        charger();
+        console.log('✅ Système prêt');
+    </script>
+</body>
+</html>

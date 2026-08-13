@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🧪 TEST FORMULAIRE</title>
+</head>
+<body>
+    <h1>🧪 TEST FORMULAIRE</h1>
+    
+    <form id="formTest">
+        <input type="text" id="nomTest" placeholder="Votre nom">
+        <button type="submit">Tester</button>
+    </form>
+
+    <div id="resultat"></div>
+
+    <script>
+        console.log("🔥 Script chargé !");
+        
+        const form = document.getElementById('formTest');
+        const nom = document.getElementById('nomTest');
+        const resultat = document.getElementById('resultat');
+
+        console.log("Form:", form);
+        console.log("Nom:", nom);
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("🔥 Formulaire soumis !");
+            const valeur = nom.value;
+            console.log("Valeur:", valeur);
+            resultat.innerHTML = "✅ Vous avez écrit: " + valeur;
+        });
+    </script>
+</body>
+</html>
